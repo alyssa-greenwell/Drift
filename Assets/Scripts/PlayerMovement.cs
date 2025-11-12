@@ -98,18 +98,41 @@ public class PlayerMovement : MonoBehaviour
             if (Keyboard.current.downArrowKey.isPressed) pitchInput -= 1f;
         }
 
-        // --- MOVEMENT ---
+        // --- MOVEMENT (NOW USING FORCES INSTEAD OF SETTING VELOCITY) ---
+        // This allows external forces (like currents) to affect the player!
+        
+        // Forward/backward movement
         if (Mathf.Abs(moveInput) > 0.1f)
-            currentSpeed += acceleration * moveInput * Time.fixedDeltaTime;
-        else
-            currentSpeed = Mathf.MoveTowards(currentSpeed, 0f, drag * Time.fixedDeltaTime);
+        {
+            Vector3 forwardForce = mainCam.transform.forward * moveInput * acceleration;
+            rb.AddForce(forwardForce, ForceMode.Force);
+        }
 
-        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed * 0.5f, maxSpeed);
+        // Strafe left/right
+        if (Mathf.Abs(strafeInput) > 0.1f)
+        {
+            Vector3 strafeForce = mainCam.transform.right * strafeInput * acceleration * 0.5f;
+            rb.AddForce(strafeForce, ForceMode.Force);
+        }
 
-        Vector3 forwardMove = mainCam.transform.forward * currentSpeed;
-        Vector3 strafeMove = mainCam.transform.right * strafeInput * (maxSpeed * 0.5f);
-        Vector3 verticalMove = mainCam.transform.up * verticalInput * verticalSpeed;
-        rb.linearVelocity = forwardMove + strafeMove + verticalMove;
+        // Vertical up/down
+        if (Mathf.Abs(verticalInput) > 0.1f)
+        {
+            Vector3 verticalForce = mainCam.transform.up * verticalInput * verticalSpeed;
+            rb.AddForce(verticalForce, ForceMode.Force);
+        }
+
+        // Cap the maximum speed (but don't override velocity completely)
+        if (rb.linearVelocity.magnitude > maxSpeed)
+        {
+            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+        }
+
+        // Apply manual drag when no input (so player slows down naturally)
+        if (Mathf.Abs(moveInput) < 0.1f && Mathf.Abs(strafeInput) < 0.1f)
+        {
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, drag * Time.fixedDeltaTime);
+        }
 
         // --- ROTATION ---
         if (Mathf.Abs(steerInput) > 0.1f)

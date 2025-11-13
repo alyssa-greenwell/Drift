@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a7f1003be8dbb6d4e9d6f20433040ae9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 178104
+  packageName: Yellow Tangs
+  packageVersion: 1.0
+  assetPath: Assets/CGSoul/Yellow Tangs/Art/Animations/AC_YellowTangs.controller
+  uploadId: 388406

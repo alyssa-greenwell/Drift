@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c4818eacb8102404bb57341aa0f3cbed
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 112440
+  packageName: Giant Manta Ray
+  packageVersion: 3.0
+  assetPath: Assets/CGSoul/Giant Manta Ray/Art/Animation/AC_MR_Stay.controller
+  uploadId: 656041

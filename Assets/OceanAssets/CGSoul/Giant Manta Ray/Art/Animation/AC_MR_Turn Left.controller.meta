@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b564768e12044e544b0285d6cc18839c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 112440
+  packageName: Giant Manta Ray
+  packageVersion: 3.0
+  assetPath: Assets/CGSoul/Giant Manta Ray/Art/Animation/AC_MR_Turn Left.controller
+  uploadId: 656041

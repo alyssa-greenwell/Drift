@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 12ae4fdb5b3a4d047b58c2a8f7286805
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 112440
+  packageName: Giant Manta Ray
+  packageVersion: 3.0
+  assetPath: Assets/CGSoul/Giant Manta Ray/Art/Animation/AC_MR_Swim Calm.controller
+  uploadId: 656041

@@ -30,6 +30,7 @@ namespace WaveHarmonic.Crest
     /// Contains shared functionality for <see cref="AbsorptionLod"/> and <see cref="ScatteringLod"/>.
     /// </summary>
     [FilterEnum(nameof(_TextureFormatMode), Filtered.Mode.Exclude, (int)LodTextureFormatMode.Automatic)]
+    [System.Serializable]
     public abstract partial class ColorLod : Lod
     {
         [@Space(10f)]

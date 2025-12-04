@@ -864,6 +864,11 @@ namespace WaveHarmonic.Crest
                 return;
             }
 
+            if (!_Initialized || _IsFirstFrameSinceEnabled)
+            {
+                return;
+            }
+
             Utility.RTHandles.OnBeginCameraRendering(camera);
 
             OnBeginCameraRendering(_Context, camera);
@@ -874,6 +879,11 @@ namespace WaveHarmonic.Crest
         {
             // Guard against being called before the RP change events are raised.
             if (_SetUpFor != RenderPipelineHelper.RenderPipeline)
+            {
+                return;
+            }
+
+            if (!_Initialized || _IsFirstFrameSinceEnabled)
             {
                 return;
             }
@@ -946,7 +956,7 @@ namespace WaveHarmonic.Crest
             // Always execute after surface.
             if (RenderPipelineHelper.IsUniversal)
             {
-                CopyTargetsRenderPass.Instance.OnBeginCameraRendering(context, camera);
+                CopyTargetsRenderPass.Instance?.OnBeginCameraRendering(context, camera);
             }
             else
 #endif

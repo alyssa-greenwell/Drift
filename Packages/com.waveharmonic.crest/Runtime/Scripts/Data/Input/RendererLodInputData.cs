@@ -11,6 +11,7 @@ namespace WaveHarmonic.Crest
     /// <summary>
     /// Data storage for for the Renderer input mode.
     /// </summary>
+    [System.Serializable]
     public abstract partial class RendererLodInputData : LodInputData
     {
         [Tooltip("The renderer to use for this input.\n\nCan be anything that inherits from <i>Renderer</i> like <i>MeshRenderer</i>, <i>TrailRenderer</i> etc.")]

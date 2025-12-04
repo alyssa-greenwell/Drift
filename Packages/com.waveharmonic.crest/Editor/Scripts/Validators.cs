@@ -696,7 +696,7 @@ namespace WaveHarmonic.Crest.Editor
             {
                 messenger
                 (
-                    $"Water body <i>{target.gameObject.name}</i> requires an water renderer component to be present.",
+                    $"Water body <i>{target.gameObject.name}</i> requires a <i>{nameof(WaterRenderer)}</i> component to be present.",
                     $"Create a separate GameObject and add an <i>{nameof(WaterRenderer)}</i> component to it.",
                     MessageType.Error, target
                 );

@@ -218,19 +218,31 @@ namespace WaveHarmonic.Crest
                     Vector3.Dot(Vector3.up, camera.transform.up)
                 ));
 
-                var pass = 1;
+                var isFullScreenRequired = true;
+                var isMasked = false;
+                var passOffset = 1;
 
 #if d_CrestPortals
-                pass = 4;
+                passOffset = (int)Portals.PortalRenderer.MeniscusPass.Length;
 
-                if (_Water.Portals.Active && !(_Water.Underwater.UseLegacyMask && _Water._Portals.Mode == Portals.PortalMode.Tunnel))
+                if (_Water.Portals.Active)
                 {
-                    _Water._Portals.RenderMeniscus(commands, _Meniscus.Material);
+                    isMasked = isFullScreenRequired = _Water._Portals.RenderMeniscus(commands, _Meniscus.Material);
                 }
-                else
 #endif
+
+                if (isFullScreenRequired)
                 {
-                    commands.DrawFullScreenTriangle(_Meniscus.Material, pass: _Water._Underwater.UseLegacyMask ? pass : 0);
+                    var pass = isMasked ? 1 : 0;
+                    var mpb = _Water.Surface._SurfaceDataMPB;
+
+                    if (_Water._Underwater.UseLegacyMask)
+                    {
+                        pass += passOffset;
+                        mpb = null;
+                    }
+
+                    commands.DrawFullScreenTriangle(_Meniscus.Material, pass, mpb);
                 }
             }
         }

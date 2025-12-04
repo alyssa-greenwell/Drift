@@ -35,6 +35,7 @@ namespace WaveHarmonic.Crest
             public Shader _UnderwaterMask;
             public Shader _HorizonMask;
             public Shader _Portals;
+            public Shader _PortalsMask;
 
             public Shader _ClipConvexHull;
 

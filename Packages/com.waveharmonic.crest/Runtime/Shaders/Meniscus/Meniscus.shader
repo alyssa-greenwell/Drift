@@ -64,7 +64,7 @@ Shader "Crest/Meniscus"
                 "com.waveharmonic.crest.portals"
             }
 
-            Name "Meniscus"
+            Name "Meniscus (Masked)"
 
             HLSLPROGRAM
             #pragma shader_feature_local_fragment _ d_Crest_Refraction
@@ -74,7 +74,7 @@ Shader "Crest/Meniscus"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.waveharmonic.crest/Runtime/Shaders/Library/Utility/RP/HDRP/Common.hlsl"
 
-            #define d_Portal 1
+            #define d_Masked 1
 
             #include "Packages/com.waveharmonic.crest/Runtime/Shaders/Meniscus/Meniscus.hlsl"
             ENDHLSL
@@ -259,7 +259,7 @@ Shader "Crest/Meniscus"
                 "com.waveharmonic.crest.portals"
             }
 
-            Name "Meniscus"
+            Name "Meniscus (Masked)"
 
             HLSLPROGRAM
             #pragma shader_feature_local_fragment _ d_Crest_Refraction
@@ -269,7 +269,7 @@ Shader "Crest/Meniscus"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
-            #define d_Portal 1
+            #define d_Masked 1
 
             #include "Packages/com.waveharmonic.crest/Runtime/Shaders/Meniscus/Meniscus.hlsl"
             ENDHLSL
@@ -445,13 +445,13 @@ Shader "Crest/Meniscus"
                 "com.waveharmonic.crest.portals"
             }
 
-            Name "Meniscus (Portal)"
+            Name "Meniscus (Masked)"
 
             HLSLPROGRAM
             #pragma shader_feature_local_fragment _ d_Crest_Refraction
             #pragma shader_feature_local_fragment _ d_Crest_Lighting
 
-            #define d_Portal 1
+            #define d_Masked 1
 
             #include "Packages/com.waveharmonic.crest/Runtime/Shaders/Library/Utility/Legacy/Core.hlsl"
             #include "Packages/com.unity.shadergraph/Editor/Generation/Targets/BuiltIn/ShaderLibrary/DeclareOpaqueTexture.hlsl"

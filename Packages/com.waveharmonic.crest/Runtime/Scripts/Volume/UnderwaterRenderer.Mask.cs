@@ -106,6 +106,15 @@ namespace WaveHarmonic.Crest
                 return;
             }
 
+            var keep = false;
+
+#if d_CrestPortals
+            if (_Water.Portals.Active)
+            {
+                keep = _Water.Portals.RenderLineMask(buffer, target);
+            }
+#endif
+
             var wrapper = new PropertyWrapperCompute(buffer, WaterResources.Instance.Compute._Mask, (int)RenderPipelineHelper.RenderPipeline);
 
             var parameters = _Water.Surface._SurfaceDataParameters;
@@ -114,6 +123,9 @@ namespace WaveHarmonic.Crest
             wrapper.SetVector(SurfaceRenderer.ShaderIDs.s_WaterLineSnappedPosition, parameters._SnappedPosition);
             wrapper.SetVector(SurfaceRenderer.ShaderIDs.s_WaterLineResolution, parameters._Resolution);
             wrapper.SetFloat(SurfaceRenderer.ShaderIDs.s_WaterLineTexel, parameters._Texel);
+
+            // Only write if not written (ie zero).
+            wrapper.SetKeyword(new(WaterResources.Instance.Compute._Mask, "d_KeepValue"), keep);
 
             // Setting this sets unity_CameraToWorld.
             wrapper.SetMatrix(Crest.ShaderIDs.Unity.s_CameraToWorld, camera.cameraToWorldMatrix);
@@ -133,6 +145,10 @@ namespace WaveHarmonic.Crest
             {
                 return;
             }
+
+            // This will not be set automatically unless we use they RP variant approach
+            // similar to Mask.compute.
+            _ArtifactsShader.SetKeyword(new LocalKeyword(_ArtifactsShader, "STEREO_INSTANCING_ON"), descriptor.dimension == TextureDimension.Tex2DArray);
 
             buffer.SetComputeTextureParam(_ArtifactsShader, _ArtifactsKernel, MaskRenderer.ShaderIDs.s_WaterMaskTexture, target);
 

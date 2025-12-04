@@ -26,6 +26,11 @@ namespace WaveHarmonic.Crest.Editor
                 return;
             }
 
+            if (EditorApplication.isUpdating)
+            {
+                return;
+            }
+
             EditorApplication.update -= GenerateAfterReloadScripts;
 
             // Generate HLSL from C#. Only targets WaveHarmonic.Crest assemblies.

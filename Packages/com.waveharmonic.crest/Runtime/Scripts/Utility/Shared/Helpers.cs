@@ -207,15 +207,22 @@ namespace WaveHarmonic.Crest
         }
 
         /// <summary>
-        /// Uses PrefabUtility.InstantiatePrefab in editor and GameObject.Instantiate in standalone.
+        /// Uses PrefabUtility.InstantiatePrefab in edit mode, otherwise uses GameObject.Instantiate.
         /// </summary>
         public static GameObject InstantiatePrefab(GameObject prefab)
         {
 #if UNITY_EDITOR
-            return (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab);
-#else
-            return GameObject.Instantiate(prefab);
+            if (!Application.isPlaying)
+            {
+                // Previously we always used this in the editor, including play mode. But it was
+                // reported to have failed (null return) when Asset Bundles were used in play mode.
+                return (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab);
+            }
+            else
 #endif
+            {
+                return Object.Instantiate(prefab);
+            }
         }
 
         // Taken from Unity

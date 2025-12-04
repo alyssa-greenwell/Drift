@@ -189,38 +189,30 @@ namespace WaveHarmonic.Crest
 
         internal void ExecuteEffect(Camera camera, CommandBuffer buffer, System.Action<CommandBuffer> copyColor, System.Action<CommandBuffer> resetRenderTargets, MaterialPropertyBlock properties = null)
         {
-            if (camera.cameraType == CameraType.Reflection)
-            {
-                buffer.DrawProcedural
-                (
-                    Matrix4x4.identity,
-                    _VolumeMaterial,
-                    shaderPass: (int)EffectPass.Reflections,
-                    MeshTopology.Triangles,
-                    vertexCount: 3,
-                    instanceCount: 1,
-                    properties
-                );
-            }
+            var isFullScreenRequired = true;
+
 #if d_CrestPortals
-            else if (_Portals.Active && _Portals.Mode != Portals.PortalMode.Tunnel)
+            if (_Portals.Active)
             {
-                _Portals.RenderEffect(camera, buffer, _VolumeMaterial, copyColor, resetRenderTargets, properties);
+                isFullScreenRequired = _Portals.RenderEffect(camera, buffer, _VolumeMaterial, copyColor, resetRenderTargets, properties);
             }
 #endif
-            else
+
+            if (!isFullScreenRequired)
             {
-                buffer.DrawProcedural
-                (
-                    Matrix4x4.identity,
-                    _VolumeMaterial,
-                    shaderPass: (int)EffectPass.FullScreen,
-                    MeshTopology.Triangles,
-                    vertexCount: 3,
-                    instanceCount: 1,
-                    properties
-                );
+                return;
             }
+
+            buffer.DrawProcedural
+            (
+                Matrix4x4.identity,
+                _VolumeMaterial,
+                shaderPass: (int)(camera.cameraType == CameraType.Reflection ? EffectPass.Reflections : EffectPass.FullScreen),
+                MeshTopology.Triangles,
+                vertexCount: 3,
+                instanceCount: 1,
+                properties
+            );
         }
 
         internal static void UpdateGlobals(Material source)

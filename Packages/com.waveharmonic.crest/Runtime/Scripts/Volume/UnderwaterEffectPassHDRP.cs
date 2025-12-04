@@ -110,6 +110,9 @@ namespace WaveHarmonic.Crest
                 return;
             }
 
+            // Allocate here in case user changes options and we skipped allocation in Setup.
+            s_UnderwaterEffectPass.Allocate(context.cameraColorBuffer.rt.graphicsFormat);
+
             // Create a separate stencil buffer context by using a depth buffer copy if needed.
             var depthBuffer = s_Renderer.UseStencilBuffer
                 ? s_CopyDepthBufferPassHDRP._DepthBufferCopy

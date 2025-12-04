@@ -26,6 +26,7 @@ MonoBehaviour:
     _UnderwaterMask: {fileID: 4800000, guid: edb653e62cc924b99b0a1086ffb39be7, type: 3}
     _HorizonMask: {fileID: 4800000, guid: 80a81e5410296461d827cd6eed939b81, type: 3}
     _Portals: {fileID: 4800000, guid: 370ffa403718b4982a8a3e0101263093, type: 3}
+    _PortalsMask: {fileID: 4800000, guid: 3e6aaf795e0984bacb7a9fc4785f1f6a, type: 3}
     _ClipConvexHull: {fileID: 4800000, guid: 1f5d1e029c7564da8855bf97e3b9247a, type: 3}
     _ShallowWaterSimulationVisualizer: {fileID: 4800000, guid: 613caf76dccc3ea45b0501b731a55ec2,
       type: 3}

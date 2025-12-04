@@ -12,7 +12,7 @@ AssetOrigin:
   serializedVersion: 1
   productId: 268614
   packageName: Crest Water 5 (Oceans, Rivers, Lakes)
-  packageVersion: 5.6.5
+  packageVersion: 5.6.6
   assetPath: Packages/com.waveharmonic.crest/Runtime/Shaders/Volume/Graph/Integrate
     Water Volume.shadersubgraph
-  uploadId: 799494
+  uploadId: 819496

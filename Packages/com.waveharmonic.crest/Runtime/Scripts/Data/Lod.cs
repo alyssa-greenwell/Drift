@@ -661,6 +661,7 @@ namespace WaveHarmonic.Crest
     /// Base type for simulations with a provider.
     /// </summary>
     /// <typeparam name="T">The query provider.</typeparam>
+    [System.Serializable]
     public abstract class Lod<T> : Lod where T : IQueryProvider
     {
         /// <summary>

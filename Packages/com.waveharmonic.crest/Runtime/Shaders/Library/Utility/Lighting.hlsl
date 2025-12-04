@@ -16,6 +16,29 @@
 #ifdef USE_FORWARD_PLUS
 #define USE_CLUSTER_LIGHT_LOOP USE_FORWARD_PLUS
 #endif // USE_FORWARD_PLUS
+
+#ifdef FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+#define CLUSTER_LIGHT_LOOP_SUBTRACTIVE_LIGHT_CHECK FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+#endif // FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+
+#if UNITY_VERSION >= 60000000
+#if defined(STEREO_INSTANCING_ON) || defined(STEREO_MULTIVIEW_ON)
+#if _ALPHATEST_ON
+#if !USE_CLUSTER_LIGHT_LOOP
+// If not clustered and additional light shadows and XR, the shading model
+// completely breaks. It is like shadow attenuation is NaN or some obscure
+// compiler issue. For 2022.3, it is broken for forward+ only, but cannot be fixed.
+#define d_ShadowMaskBroken 1
+#else
+#if _RECEIVE_SHADOWS_OFF
+// Right eye broken rendering similar to above.
+#define d_AdditionalLightsBroken 1
+#endif
+#endif
+#endif
+#endif
+#endif
+
 #endif // CREST_URP
 
 #if CREST_HDRP
@@ -106,15 +129,19 @@ half3 AdditionalLighting(const float3 i_PositionWS, const float4 i_ScreenPositio
 
 #if CREST_URP
 #if defined(_ADDITIONAL_LIGHTS)
+    InputData inputData = (InputData)0;
+    inputData.normalizedScreenSpaceUV = i_ScreenPosition.xy / i_ScreenPosition.w;
+    inputData.positionWS = i_PositionWS;
 
     // Shadowmask.
 #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
-    half4 shadowMask = SAMPLE_SHADOWMASK(i_StaticLightMapUV);
-#elif !defined(LIGHTMAP_ON)
-    half4 shadowMask = unity_ProbesOcclusion;
-#else
-    half4 shadowMask = half4(1, 1, 1, 1);
+    inputData.shadowMask = SAMPLE_SHADOWMASK(i_StaticLightMapUV);
 #endif
+
+    const half4 shadowMask = CalculateShadowMask(inputData);
+
+    // No AO, but we need the struct.
+    AmbientOcclusionFactor aoFactor = CreateAmbientOcclusionFactor(inputData.normalizedScreenSpaceUV, 0.0);
 
     uint pixelLightCount = GetAdditionalLightsCount();
 
@@ -122,16 +149,18 @@ half3 AdditionalLighting(const float3 i_PositionWS, const float4 i_ScreenPositio
     uint meshRenderingLayers = GetMeshRenderingLayer();
 #endif
 
-#if USE_CLUSTER_LIGHT_LOOP
-    InputData inputData = (InputData)0;
-    // For Foward+ LIGHT_LOOP_BEGIN macro uses inputData.normalizedScreenSpaceUV and inputData.positionWS.
-    inputData.normalizedScreenSpaceUV = i_ScreenPosition.xy / i_ScreenPosition.w;
-    inputData.positionWS = i_PositionWS;
-#endif
-
 LIGHT_LOOP_BEGIN(pixelLightCount)
     // Includes shadows and cookies.
-    Light light = GetAdditionalLight(lightIndex, i_PositionWS, shadowMask);
+    Light light = GetAdditionalLight(lightIndex, inputData, shadowMask, aoFactor);
+
+#if d_ShadowMaskBroken
+    light.shadowAttenuation = 1.0;
+#endif
+
+#if d_AdditionalLightsBroken
+    light.color = 0.0;
+#endif
+
 #ifdef _LIGHT_LAYERS
     if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
 #endif
@@ -139,6 +168,23 @@ LIGHT_LOOP_BEGIN(pixelLightCount)
         color += light.color * (light.distanceAttenuation * light.shadowAttenuation);
     }
 LIGHT_LOOP_END
+
+#if USE_CLUSTER_LIGHT_LOOP
+    // Additional directional lights.
+    [loop] for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)
+    {
+        CLUSTER_LIGHT_LOOP_SUBTRACTIVE_LIGHT_CHECK
+
+        Light light = GetAdditionalLight(lightIndex, inputData, shadowMask, aoFactor);
+
+#ifdef _LIGHT_LAYERS
+        if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
+#endif
+        {
+            color += light.color * (light.distanceAttenuation * light.shadowAttenuation);
+        }
+    }
+#endif // USE_CLUSTER_LIGHT_LOOP
 #endif // _ADDITIONAL_LIGHTS
 #endif // CREST_URP
 

@@ -93,10 +93,6 @@ namespace WaveHarmonic.Crest
 
             water._ShadowLod.BuildCommandBuffer(water, buffer);
 
-            // Restore matrices otherwise remaining render will have incorrect matrices. Each pass is responsible for
-            // restoring matrices if required.
-            buffer.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
-
             // Restore XR SPI as we cannot rely on remaining pipeline to do it for us.
             Rendering.URP.EnableXR(buffer, renderingData.cameraData);
 

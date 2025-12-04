@@ -46,7 +46,7 @@ namespace WaveHarmonic.Crest
             }
 
             // TODO: There may other settings we want to set or bring in. Not MSAA since this is a resolved texture.
-            _ColorTexture = RTHandles.Alloc
+            _ColorTexture ??= RTHandles.Alloc
             (
                 Vector2.one,
                 TextureXR.slices,

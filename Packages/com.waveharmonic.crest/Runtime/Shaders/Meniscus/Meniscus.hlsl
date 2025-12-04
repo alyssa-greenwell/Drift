@@ -18,10 +18,8 @@
 
 #include "Packages/com.waveharmonic.crest/Runtime/Shaders/Surface/Data.hlsl"
 
-#if d_Portal
+#if d_Masked
 TEXTURE2D_X(_Crest_WaterMaskTexture);
-TEXTURE2D_X(_Crest_PortalFogAfterTexture);
-TEXTURE2D_X(_Crest_PortalFogBeforeTexture);
 #endif
 
 #if d_Crest_Lighting
@@ -87,6 +85,14 @@ half4 Fragment(Varyings input)
 {
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
+#if d_Masked
+    // Prevent rendering inside of new portal modules.
+    if (LOAD_TEXTURE2D_X(_Crest_WaterMaskTexture, input.positionCS.xy).r == k_Crest_MaskInsidePortal)
+    {
+        discard;
+    }
+#endif
+
     float3 positionWS;
     float3 directionWS;
     float2 uv;
@@ -102,30 +108,6 @@ half4 Fragment(Varyings input)
     }
 #else
     {
-#if d_Portal
-        if (_Crest_Portal > 3)
-        {
-            // Only render if outside the portal.
-            if (LOAD_TEXTURE2D_X(_Crest_PortalFogBeforeTexture, input.positionCS.xy).r == 0.0 && LOAD_TEXTURE2D_X(_Crest_PortalFogAfterTexture, input.positionCS.xy).r > 0.0)
-            {
-                discard;
-            }
-        }
-        else
-        {
-            // Only render if inside the portal.
-            if (LOAD_TEXTURE2D_X(_Crest_WaterMaskTexture, input.positionCS.xy).r == 0.0)
-            {
-                discard;
-            }
-
-            if (LOAD_TEXTURE2D_X(_Crest_PortalFogAfterTexture, input.positionCS.xy).r > 0.0)
-            {
-                discard;
-            }
-        }
-#endif
-
         positionWS = ComputeWorldSpacePosition(input.uv, UNITY_NEAR_CLIP_VALUE, UNITY_MATRIX_I_VP);
 
 #if (SHADEROPTIONS_CAMERA_RELATIVE_RENDERING != 0)

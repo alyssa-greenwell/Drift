@@ -39,8 +39,6 @@ namespace WaveHarmonic.Crest
 
             Render(camera, buffer, _WaterLevelDepthMaterial);
 
-            Render(camera, buffer, _WaterLevelDepthMaterial);
-
             // Depth texture.
             // Always release to handle screen size changes.
             _WaterLevelDepthTexture.Release();

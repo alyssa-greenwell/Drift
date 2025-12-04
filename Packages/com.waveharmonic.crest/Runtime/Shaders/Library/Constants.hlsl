@@ -59,6 +59,7 @@
 // used to scale the meniscus as it is calculate using a pixel offset which can make the meniscus large at a distance.
 #define MENISCUS_MAXIMUM_DISTANCE 15.0
 
+#define k_Crest_MaskInsidePortal 5
 
 #if defined(STEREO_INSTANCING_ON) || defined(STEREO_MULTIVIEW_ON)
 #define CREST_HANDLE_XR 1

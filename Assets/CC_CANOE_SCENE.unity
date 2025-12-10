@@ -3539,7 +3539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Countdown
   turtle: {fileID: 1604425027}
-  countdownCanvas: {fileID: 0}
+  countdownCanvas: {fileID: 520259887}
   countdownText: {fileID: 139283534}
   distanceInFront: 8
   heightOffset: 1.5
@@ -9218,12 +9218,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1313643565}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &1313643567 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8419802679652866803, guid: 842eb98046e1ca348b3c0807fcfe362d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1313643565}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1313643568 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8419178667490943989, guid: 842eb98046e1ca348b3c0807fcfe362d,
@@ -9242,23 +9236,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88fb073c2ef7ce42a0a6d623df2c569, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnderwaterCurrent
-  currentForce: {x: 0, y: 0, z: 500}
-  mode: 1
-  accelerationRate: 10
-  maxCurrentSpeed: 60
-  currentParticles: {fileID: 1313643567}
-  currentColor:
-    r: 0.3
-    g: 0.7
-    b: 1
-    a: 0.5
-  showDebugArrows: 1
-  enterCurrentSound: {fileID: 0}
-  currentLoopSound: {fileID: 0}
-  audioSource: {fileID: 0}
-  speedBoostMultiplier: 1.5
-  grantsInvincibility: 0
-  invincibilityDuration: 2
 --- !u!64 &1313643570
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -14228,5 +14205,5 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 428802942}
   - {fileID: 1313643565}
-  - {fileID: 520259888}
   - {fileID: 1804483805}
+  - {fileID: 520259888}

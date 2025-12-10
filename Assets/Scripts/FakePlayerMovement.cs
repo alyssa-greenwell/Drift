@@ -16,14 +16,22 @@ public class FakePlayerMovement : MonoBehaviour
 
     [Header("Collision Settings")]
     public float collisionCheckDistance = 1f;
-    public float verticalRotationLimit = 45f;
-    public float currentVerticalRotation = 0f;
+    public float minHeightOffset = -200f;
+    public float maxHeightOffset = 100f;
+    public float currentYOffset = 0f;
+    private float startingY;
 
     float forwardInput;
     float turnInput;
     float verticalInput;
 
     float currentSpeed = 0f;
+
+    void Start()
+{
+    if (worldRoot != null)
+        startingY = worldRoot.transform.position.y;
+}
 
     void Update()
     {
@@ -111,37 +119,30 @@ public class FakePlayerMovement : MonoBehaviour
         );
     }
 
-   void MoveWorld()
+void MoveWorld()
 {
     if (worldRoot == null) return;
 
     // Forward/backward movement
     Vector3 move = playerModel.forward * currentSpeed;
-    Vector3 worldMove = -move * Time.deltaTime;
 
-    // Horizontal collision check
-    if (!IsBlocked(move))
-    {
-        worldRoot.transform.position += worldMove;
-    }
-
-    // Vertical input rotates the world instead of moving it
+    // Vertical movement
     if (Mathf.Abs(verticalInput) > 0.01f)
     {
-        float rotationAmount = verticalInput * verticalSpeed * Time.deltaTime;
+        // Update vertical offset
+        currentYOffset += verticalInput * verticalSpeed * Time.deltaTime;
+        currentYOffset = Mathf.Clamp(currentYOffset, minHeightOffset, maxHeightOffset);
 
-        // Clamp rotation so it doesn't exceed limits
-        float newVerticalRotation = Mathf.Clamp(currentVerticalRotation + rotationAmount, -verticalRotationLimit, verticalRotationLimit);
-        float deltaRotation = newVerticalRotation - currentVerticalRotation;
+        // Apply vertical movement to world
+        Vector3 worldPos = worldRoot.transform.position;
+        worldPos.y = startingY + currentYOffset;
+        worldRoot.transform.position = worldPos;
+    }
 
-        // Apply rotation
-        worldRoot.transform.RotateAround(
-            playerModel.position,
-            playerModel.right,
-            deltaRotation
-        );
-
-        currentVerticalRotation = newVerticalRotation;
+    // Horizontal movement
+    if (!IsBlocked(move))
+    {
+        worldRoot.transform.position -= move * Time.deltaTime;
     }
 }
 

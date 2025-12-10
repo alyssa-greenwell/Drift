@@ -114,12 +114,25 @@ public class FakePlayerMovement : MonoBehaviour
     {
         if (worldRoot == null) return;
 
+        // Forward/backward movement
         Vector3 move = playerModel.forward * currentSpeed;
-        move += Vector3.up * verticalInput * verticalSpeed;
+        Vector3 worldMove = -move * Time.deltaTime;
 
+        // Horizontal collision check
         if (!IsBlocked(move))
         {
-            worldRoot.transform.position -= move * Time.deltaTime;
+            worldRoot.transform.position += worldMove;
+        }
+
+        // Vertical input now rotates the world instead of moving it
+        if (Mathf.Abs(verticalInput) > 0.01f)
+        {
+            // Rotate around player's local right axis
+            worldRoot.transform.RotateAround(
+                playerModel.position,
+                playerModel.right,
+                verticalInput * verticalSpeed * Time.deltaTime
+            );
         }
     }
 

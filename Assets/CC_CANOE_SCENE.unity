@@ -3814,15 +3814,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FakePlayerMovement
   worldRoot: {fileID: 428802941}
-  playerTransform: {fileID: 551571938}
-  acceleration: 15
+  playerModel: {fileID: 551571938}
+  acceleration: 5
+  deceleration: 3
   maxSpeed: 30
-  drag: 2
   verticalSpeed: 10
-  turnSpeed: 80
-  pitchSpeed: 40
-  maxPitchAngle: 45
-  autoLevelSpeed: 2
+  turnSpeed: 30
+  collisionCheckDistance: 1
 --- !u!1 &554100229
 GameObject:
   m_ObjectHideFlags: 0
@@ -6822,6 +6820,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2580605299315453220, guid: d59d94cb129f78b4c92fd82e220413d0,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5612529865709996176, guid: d59d94cb129f78b4c92fd82e220413d0,
         type: 3}

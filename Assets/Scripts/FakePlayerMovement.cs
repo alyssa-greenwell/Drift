@@ -16,6 +16,8 @@ public class FakePlayerMovement : MonoBehaviour
 
     [Header("Collision Settings")]
     public float collisionCheckDistance = 1f;
+    public float verticalRotationLimit = 45f;
+    public float currentVerticalRotation = 0f;
 
     float forwardInput;
     float turnInput;
@@ -58,28 +60,27 @@ public class FakePlayerMovement : MonoBehaviour
         // -------------------------
         // GAMEPAD INPUT
         // -------------------------
-        if (Gamepad.current != null)
-        {
-            Vector2 stick = Gamepad.current.leftStick.ReadValue();
+          if (Gamepad.current != null)
+    {
+        Vector2 stick = Gamepad.current.leftStick.ReadValue();
 
-            // Forward-back (Y axis on left stick)
-            forwardInput += stick.y;
+        // Forward/back (Y axis)
+        forwardInput += stick.y;
 
-            // Turn (X axis on stick, reversed like keyboard)
-            turnInput += -stick.x;  // stick.x right should turn left, so we invert
+        // Turn (X axis, reversed)
+        turnInput += -stick.x;
 
-            // Triggers for up/down
-            float lt = Gamepad.current.leftTrigger.ReadValue();   // down
-            float rt = Gamepad.current.rightTrigger.ReadValue();  // up
-
-            verticalInput += (rt - lt);  // RT increases, LT decreases
-        }
-
-        // Clamp to avoid weird combos
-        forwardInput = Mathf.Clamp(forwardInput, -1f, 1f);
-        turnInput = Mathf.Clamp(turnInput, -1f, 1f);
-        verticalInput = Mathf.Clamp(verticalInput, -1f, 1f);
+        // Triggers for vertical rotation
+        float lt = Gamepad.current.leftTrigger.ReadValue();   // down
+        float rt = Gamepad.current.rightTrigger.ReadValue();  // up
+        verticalInput += (rt - lt);
     }
+
+    // Clamp inputs
+    forwardInput = Mathf.Clamp(forwardInput, -1f, 1f);
+    turnInput = Mathf.Clamp(turnInput, -1f, 1f);
+    verticalInput = Mathf.Clamp(verticalInput, -1f, 1f);
+}
 
     void ApplyAcceleration()
     {
@@ -110,18 +111,39 @@ public class FakePlayerMovement : MonoBehaviour
         );
     }
 
-    void MoveWorld()
+   void MoveWorld()
+{
+    if (worldRoot == null) return;
+
+    // Forward/backward movement
+    Vector3 move = playerModel.forward * currentSpeed;
+    Vector3 worldMove = -move * Time.deltaTime;
+
+    // Horizontal collision check
+    if (!IsBlocked(move))
     {
-        if (worldRoot == null) return;
-
-        Vector3 move = playerModel.forward * currentSpeed;
-        move += Vector3.up * verticalInput * verticalSpeed;
-
-        if (!IsBlocked(move))
-        {
-            worldRoot.transform.position -= move * Time.deltaTime;
-        }
+        worldRoot.transform.position += worldMove;
     }
+
+    // Vertical input rotates the world instead of moving it
+    if (Mathf.Abs(verticalInput) > 0.01f)
+    {
+        float rotationAmount = verticalInput * verticalSpeed * Time.deltaTime;
+
+        // Clamp rotation so it doesn't exceed limits
+        float newVerticalRotation = Mathf.Clamp(currentVerticalRotation + rotationAmount, -verticalRotationLimit, verticalRotationLimit);
+        float deltaRotation = newVerticalRotation - currentVerticalRotation;
+
+        // Apply rotation
+        worldRoot.transform.RotateAround(
+            playerModel.position,
+            playerModel.right,
+            deltaRotation
+        );
+
+        currentVerticalRotation = newVerticalRotation;
+    }
+}
 
     bool IsBlocked(Vector3 move)
     {

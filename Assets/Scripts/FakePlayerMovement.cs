@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,104 +5,136 @@ public class FakePlayerMovement : MonoBehaviour
 {
     [Header("References")]
     public GameObject worldRoot;
-    public Transform playerTransform; // usually your player object
+    public Transform playerModel;
 
     [Header("Movement Settings")]
-    public float acceleration = 15f;
-    public float maxSpeed = 30f;
-    public float drag = 2f;
-    public float verticalSpeed = 10f;
-
-    [Header("Steering Settings")]
+    public float acceleration = 5f;
+    public float deceleration = 4f;
+    public float maxSpeed = 15f;
+    public float verticalSpeed = 5f;
     public float turnSpeed = 80f;
-    public float pitchSpeed = 40f;
-    public float maxPitchAngle = 45f;
 
-    [Header("Auto-level")]
-    public float autoLevelSpeed = 2f;
+    [Header("Collision Settings")]
+    public float collisionCheckDistance = 1f;
 
-    private Vector3 currentVelocity = Vector3.zero;
-    private Quaternion playerRotation;
+    float forwardInput;
+    float turnInput;
+    float verticalInput;
 
-    void Start()
+    float currentSpeed = 0f;
+
+    void Update()
     {
-        playerRotation = playerTransform.rotation;
+        ReadInput();
+        ApplyAcceleration();
+        RotateWorld();
+        MoveWorld();
     }
 
-    void FixedUpdate()
+    void ReadInput()
     {
-        // --- INPUT ---
-        Gamepad gamepad = Gamepad.current;
-        Keyboard kb = Keyboard.current;
+        forwardInput = 0f;
+        turnInput = 0f;
+        verticalInput = 0f;
 
-        float moveInput = 0f;
-        float strafeInput = 0f;
-        float steerInput = 0f;
-        float pitchInput = 0f;
-        float verticalInput = 0f;
-
-        if (gamepad != null)
+        // -------------------------
+        // KEYBOARD INPUT
+        // -------------------------
+        if (Keyboard.current != null)
         {
-            moveInput = gamepad.leftStick.ReadValue().y;
-            strafeInput = gamepad.leftStick.ReadValue().x;
-            steerInput = gamepad.rightStick.ReadValue().x;
-            pitchInput = -gamepad.rightStick.ReadValue().y;
-            if (gamepad.rightShoulder.isPressed) verticalInput += 1f;
-            if (gamepad.leftShoulder.isPressed) verticalInput -= 1f;
+            // Forward/back
+            if (Keyboard.current.wKey.isPressed) forwardInput += 1f;
+            if (Keyboard.current.sKey.isPressed) forwardInput -= 1f;
+
+            // REVERSED TURNING (A = rotate world right, D = rotate world left)
+            if (Keyboard.current.aKey.isPressed) turnInput += 1f;
+            if (Keyboard.current.dKey.isPressed) turnInput -= 1f;
+
+            // Vertical (Q down, E up)
+            if (Keyboard.current.eKey.isPressed) verticalInput += 1f;
+            if (Keyboard.current.qKey.isPressed) verticalInput -= 1f;
         }
 
-        if (kb != null)
+        // -------------------------
+        // GAMEPAD INPUT
+        // -------------------------
+        if (Gamepad.current != null)
         {
-            if (kb.wKey.isPressed) moveInput += 1f;
-            if (kb.sKey.isPressed) moveInput -= 1f;
-            if (kb.aKey.isPressed) strafeInput -= 1f;
-            if (kb.dKey.isPressed) strafeInput += 1f;
-            if (kb.qKey.isPressed) verticalInput -= 1f;
-            if (kb.eKey.isPressed) verticalInput += 1f;
-            if (kb.leftArrowKey.isPressed) steerInput -= 1f;
-            if (kb.rightArrowKey.isPressed) steerInput += 1f;
-            if (kb.upArrowKey.isPressed) pitchInput += 1f;
-            if (kb.downArrowKey.isPressed) pitchInput -= 1f;
+            Vector2 stick = Gamepad.current.leftStick.ReadValue();
+
+            // Forward-back (Y axis on left stick)
+            forwardInput += stick.y;
+
+            // Turn (X axis on stick, reversed like keyboard)
+            turnInput += -stick.x;  // stick.x right should turn left, so we invert
+
+            // Triggers for up/down
+            float lt = Gamepad.current.leftTrigger.ReadValue();   // down
+            float rt = Gamepad.current.rightTrigger.ReadValue();  // up
+
+            verticalInput += (rt - lt);  // RT increases, LT decreases
         }
 
-        // --- WORLDROOT MOVEMENT ---
-        Vector3 forward = playerTransform.forward;
-        Vector3 right = playerTransform.right;
-        Vector3 up = playerTransform.up;
+        // Clamp to avoid weird combos
+        forwardInput = Mathf.Clamp(forwardInput, -1f, 1f);
+        turnInput = Mathf.Clamp(turnInput, -1f, 1f);
+        verticalInput = Mathf.Clamp(verticalInput, -1f, 1f);
+    }
 
-        // Move WorldRoot opposite to input
-        Vector3 targetVelocity = (forward * moveInput + right * strafeInput) * acceleration;
-        targetVelocity += up * verticalInput * verticalSpeed;
-
-        // Smooth movement
-        currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, Time.fixedDeltaTime * 5f);
-        if (currentVelocity.magnitude > maxSpeed)
-            currentVelocity = currentVelocity.normalized * maxSpeed;
-
-        worldRoot.transform.position -= currentVelocity * Time.fixedDeltaTime;
-
-        // --- ROTATION ---
-        if (Mathf.Abs(steerInput) > 0.1f)
+    void ApplyAcceleration()
+    {
+        if (Mathf.Abs(forwardInput) > 0.01f)
         {
-            float turnAmount = steerInput * turnSpeed * Time.fixedDeltaTime;
-            worldRoot.transform.Rotate(Vector3.up, -turnAmount, Space.World);
+            currentSpeed += forwardInput * acceleration * Time.deltaTime;
+        }
+        else
+        {
+            currentSpeed = Mathf.MoveTowards(
+                currentSpeed,
+                0f,
+                deceleration * Time.deltaTime
+            );
         }
 
-        // Pitch auto-level
-        Vector3 currentEuler = playerTransform.localEulerAngles;
-        float currentPitch = currentEuler.x;
-        if (currentPitch > 180f) currentPitch -= 360f;
+        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
+    }
 
-        if (Mathf.Abs(pitchInput) > 0.1f)
+    void RotateWorld()
+    {
+        if (worldRoot == null || Mathf.Abs(turnInput) < 0.01f) return;
+
+        worldRoot.transform.RotateAround(
+            playerModel.position,
+            Vector3.up,
+            turnInput * turnSpeed * Time.deltaTime
+        );
+    }
+
+    void MoveWorld()
+    {
+        if (worldRoot == null) return;
+
+        Vector3 move = playerModel.forward * currentSpeed;
+        move += Vector3.up * verticalInput * verticalSpeed;
+
+        if (!IsBlocked(move))
         {
-            float pitchAmount = pitchInput * pitchSpeed * Time.fixedDeltaTime;
-            playerTransform.Rotate(playerTransform.right, pitchAmount, Space.World);
+            worldRoot.transform.position -= move * Time.deltaTime;
         }
-        else if (Mathf.Abs(currentPitch) > 1f)
+    }
+
+    bool IsBlocked(Vector3 move)
+    {
+        RaycastHit hit;
+        Vector3 origin = playerModel.position;
+        Vector3 dir = move.normalized;
+
+        if (Physics.Raycast(origin, dir, out hit, collisionCheckDistance))
         {
-            float levelAmount = Mathf.MoveTowards(currentPitch, 0f, autoLevelSpeed * Time.fixedDeltaTime);
-            currentEuler.x = levelAmount;
-            playerTransform.localEulerAngles = currentEuler;
+            if (!hit.collider.isTrigger)
+                return true;
         }
+
+        return false;
     }
 }

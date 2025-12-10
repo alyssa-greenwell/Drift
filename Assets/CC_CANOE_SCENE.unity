@@ -1437,17 +1437,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: b5088311dae42b2498669aff443f010c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -470.75
+      value: -471.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b5088311dae42b2498669aff443f010c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.04
+      value: 12.89
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b5088311dae42b2498669aff443f010c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -570.23
+      value: -562.94
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b5088311dae42b2498669aff443f010c,
         type: 3}
@@ -3808,21 +3808,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FakePlayerMovement
   worldRoot: {fileID: 428802941}
-  playerTransform: {fileID: 551571953}
+  playerModel: {fileID: 0}
   acceleration: 5
+  deceleration: 4
   maxSpeed: 30
-  drag: 2
   verticalSpeed: 10
   turnSpeed: 50
-  pitchSpeed: 40
-  maxPitchAngle: 45
-  autoLevelSpeed: 2
---- !u!4 &551571953 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2209388900699253717, guid: d59d94cb129f78b4c92fd82e220413d0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1005710432}
-  m_PrefabAsset: {fileID: 0}
+  collisionCheckDistance: 1
 --- !u!82 &551571954
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5960,7 +5952,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 4bf01132f75c8b3428ec4bd981be4823,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4bf01132f75c8b3428ec4bd981be4823,
         type: 3}
@@ -6112,6 +6104,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2453140}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4bf01132f75c8b3428ec4bd981be4823,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1053654658}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4bf01132f75c8b3428ec4bd981be4823,
         type: 3}
       insertIndex: -1
@@ -7458,6 +7454,100 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046507888}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1053654657
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 891874532}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -49.4245
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.53916
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 29.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5477749408508380018, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 48.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -5477749408508380018, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -6.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -5477749408508380018, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -29
+      objectReference: {fileID: 0}
+    - target: {fileID: -4683669308469848369, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 01f1078c54bfeec408235a8a7c11e597, type: 2}
+    - target: {fileID: 919132149155446097, guid: 9363799f0b9a65648bb4873da35bf673,
+        type: 3}
+      propertyPath: m_Name
+      value: Racetrack2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9363799f0b9a65648bb4873da35bf673, type: 3}
+--- !u!4 &1053654658 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9363799f0b9a65648bb4873da35bf673,
+    type: 3}
+  m_PrefabInstance: {fileID: 1053654657}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1063967901
 GameObject:
   m_ObjectHideFlags: 0
@@ -12356,6 +12446,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Racetrack
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 94789f7bd444c9248a619baef356b367,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

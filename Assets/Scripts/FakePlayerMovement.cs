@@ -21,11 +21,11 @@ public class FakePlayerMovement : MonoBehaviour
     public float currentYOffset = 0f;
     private float startingY;
 
-    float forwardInput;
-    float turnInput;
-    float verticalInput;
+     public float forwardInput;
+    public float turnInput;
+    public float verticalInput;
 
-    float currentSpeed = 0f;
+    public float currentSpeed = 0f;
 
     void Start()
 {

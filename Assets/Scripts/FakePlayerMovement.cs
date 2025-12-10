@@ -37,32 +37,58 @@ public class FakePlayerMovement : MonoBehaviour
         turnInput = 0f;
         verticalInput = 0f;
 
+        // -------------------------
+        // KEYBOARD INPUT
+        // -------------------------
         if (Keyboard.current != null)
         {
             // Forward/back
-            if (Keyboard.current.wKey.isPressed) forwardInput = 1f;
-            if (Keyboard.current.sKey.isPressed) forwardInput = -1f;
+            if (Keyboard.current.wKey.isPressed) forwardInput += 1f;
+            if (Keyboard.current.sKey.isPressed) forwardInput -= 1f;
 
             // REVERSED TURNING (A = rotate world right, D = rotate world left)
-            if (Keyboard.current.aKey.isPressed) turnInput = 1f;
-            if (Keyboard.current.dKey.isPressed) turnInput = -1f;
+            if (Keyboard.current.aKey.isPressed) turnInput += 1f;
+            if (Keyboard.current.dKey.isPressed) turnInput -= 1f;
 
-            // Vertical
-            if (Keyboard.current.eKey.isPressed) verticalInput = 1f;
-            if (Keyboard.current.qKey.isPressed) verticalInput = -1f;
+            // Vertical (Q down, E up)
+            if (Keyboard.current.eKey.isPressed) verticalInput += 1f;
+            if (Keyboard.current.qKey.isPressed) verticalInput -= 1f;
         }
+
+        // -------------------------
+        // GAMEPAD INPUT
+        // -------------------------
+        if (Gamepad.current != null)
+        {
+            Vector2 stick = Gamepad.current.leftStick.ReadValue();
+
+            // Forward-back (Y axis on left stick)
+            forwardInput += stick.y;
+
+            // Turn (X axis on stick, reversed like keyboard)
+            turnInput += -stick.x;  // stick.x right should turn left, so we invert
+
+            // Triggers for up/down
+            float lt = Gamepad.current.leftTrigger.ReadValue();   // down
+            float rt = Gamepad.current.rightTrigger.ReadValue();  // up
+
+            verticalInput += (rt - lt);  // RT increases, LT decreases
+        }
+
+        // Clamp to avoid weird combos
+        forwardInput = Mathf.Clamp(forwardInput, -1f, 1f);
+        turnInput = Mathf.Clamp(turnInput, -1f, 1f);
+        verticalInput = Mathf.Clamp(verticalInput, -1f, 1f);
     }
 
     void ApplyAcceleration()
     {
-        if (forwardInput != 0)
+        if (Mathf.Abs(forwardInput) > 0.01f)
         {
-            // Accelerate
             currentSpeed += forwardInput * acceleration * Time.deltaTime;
         }
         else
         {
-            // Slow down when no input
             currentSpeed = Mathf.MoveTowards(
                 currentSpeed,
                 0f,
@@ -70,7 +96,6 @@ public class FakePlayerMovement : MonoBehaviour
             );
         }
 
-        // Clamp max speed
         currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
     }
 
@@ -90,7 +115,6 @@ public class FakePlayerMovement : MonoBehaviour
         if (worldRoot == null) return;
 
         Vector3 move = playerModel.forward * currentSpeed;
-
         move += Vector3.up * verticalInput * verticalSpeed;
 
         if (!IsBlocked(move))

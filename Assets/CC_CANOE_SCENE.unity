@@ -3819,7 +3819,7 @@ MonoBehaviour:
   deceleration: 3
   maxSpeed: 30
   verticalSpeed: 10
-  turnSpeed: 30
+  turnSpeed: 50
   collisionCheckDistance: 1
 --- !u!1 &554100229
 GameObject:
